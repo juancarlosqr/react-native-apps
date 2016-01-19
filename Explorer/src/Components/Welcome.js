@@ -1,10 +1,11 @@
-'use strict';
+'use strict'
 
 import React, {
   Component,
   StyleSheet,
   View,
-  Text
+  Text,
+  PropTypes
 } from 'react-native'
 import Button from './Button'
 
@@ -13,7 +14,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#3498db',
+    backgroundColor: '#3498db'
   },
   font: {
     color: '#fff'
@@ -21,12 +22,12 @@ const styles = StyleSheet.create({
   appName: {
     fontSize: 30,
     textAlign: 'center',
-    margin: 10,
+    margin: 10
   },
   content: {
     fontSize: 15,
     textAlign: 'center',
-    margin: 10,
+    margin: 10
   }
 })
 
@@ -59,9 +60,13 @@ export default class Welcome extends Component {
         <Text style={[styles.font, styles.content]}>
           {this.state.msg}
         </Text>
-        <Button text="About" onPress={this.handleAboutPress.bind(this)} />
-        <Button text="Greet" onPress={this.handleGreetPress.bind(this)} />
+        <Button text='About' onPress={this.handleAboutPress.bind(this)} />
+        <Button text='Greet' onPress={this.handleGreetPress.bind(this)} />
       </View>
     )
   }
+}
+
+Welcome.propTypes = {
+  navigator: PropTypes.object
 }
