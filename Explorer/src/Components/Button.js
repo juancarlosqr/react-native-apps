@@ -2,6 +2,7 @@
 
 import React, {
   Component,
+  PropTypes,
   StyleSheet,
   Text,
   TouchableHighlight
@@ -30,13 +31,18 @@ export default class Button extends Component {
   render () {
     return (
       <TouchableHighlight
-        onPress={this.props.onPress}
-        style={styles.button}
-        underlayColor="#2C8451">
-        <Text style={styles.buttonText}>
-          {this.props.text}
+        onPress={ this.props.onPress }
+        style={ styles.button }
+        underlayColor='#2C8451'>
+        <Text style={ styles.buttonText }>
+          { this.props.text }
         </Text>
       </TouchableHighlight>
     )
   }
+}
+
+Button.propTypes = {
+  onPress: PropTypes.func,
+  text: PropTypes.string
 }
