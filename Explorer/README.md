@@ -9,8 +9,10 @@ Basic navigation Explorer app in React Native and ES6 syntax
 
 ## How to run
 
-1. Run `npm install`
-2. Open ios/Explorer.xcodeproj in Xcode and hit run
+```
+npm install
+react-native run-ios
+```
 
 ## Screenshots
 
