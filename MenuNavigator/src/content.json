@@ -1,0 +1,19 @@
+{
+  "company": "Global Tech Inc",
+  "title": "WE WORK FOR YOU",
+  "initialChapter": "1",
+  "chapters": [
+    {
+      "text": "Simple To Use",
+      "description": "Just a few really simple steps,\nto put us on task for you."
+    },
+    {
+      "text": "Big-Time Analytics",
+      "description": "We can help you, to turn insights into real gains.\nIt all starts with understanding consumer behavior."
+    },
+    {
+      "text": "Optimizing Your Inventory",
+      "description": "Efficient stock control allows you to have,\nthe right amount of stock in the right place at the right time."
+    }
+  ]
+}
