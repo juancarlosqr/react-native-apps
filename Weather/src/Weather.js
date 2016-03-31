@@ -1,72 +1,68 @@
-'use strict';
-
-var React = require('react-native');
-var Api = require('./api');
-
-var {
+import React, {
+  Component,
   View,
   Text,
   TouchableHighlight,
   StyleSheet
-} = React;
+} from 'react-native'
+import api from './api'
 
-var Weather = React.createClass({
-  getInitialState: function () {
-    return {
+export default class Weather extends Component {
+  constructor (props) {
+    super(props)
+    this.state = {
       lat: '-34.916226',
       lon: '-56.159872',
       city: '',
       temp: '',
       desc: ''
-    };
-  },
-  getWeather: function () {
-    Api(this.state.lat, this.state.lon)
+    }
+  }
+
+  getWeather () {
+    api.getWeather(this.state.lat, this.state.lon)
       .then((data) => {
-        if(data !== null) {
-          this.setState(data);
-        }
-        else {
-          this.setState({desc: 'Something went wrong :('});
-        }
-      });
-  },
-  render: function () {
+        if (data !== null) this.setState(data)
+        else this.setState({desc: 'Something went wrong :('})
+      })
+  }
+
+  render () {
     return (
-      <View style={styles.wrapper}>
-        <Text style={styles.title}>
+      <View style={ styles.wrapper }>
+        <Text style={ styles.title }>
           Weather
         </Text>
         <Text>
-          {this.state.lat}
+          { this.state.lat }
         </Text>
         <Text>
-          {this.state.lon}
+          { this.state.lon }
         </Text>
         <TouchableHighlight
-          onPress={this.getWeather}
-          style={styles.button}>
+          onPress={ this.getWeather.bind(this) }
+          style={ styles.button }>
           <Text>
             Check weather
           </Text>
         </TouchableHighlight>
-        <Text style={styles.city}>
-          {this.state.city}
+        <Text style={ styles.city }>
+          { this.state.city }
         </Text>
         <Text>
-          {this.state.temp}
+          { this.state.temp }
         </Text>
         <Text>
-          {this.state.desc}
+          { this.state.desc }
         </Text>
       </View>
-    );
+    )
   }
-});
+}
 
 var styles = StyleSheet.create({
   wrapper: {
-    flex:1,
+    flex: 1,
     justifyContent: 'center',
     alignItems: 'center'
   },
@@ -82,6 +78,4 @@ var styles = StyleSheet.create({
   city: {
     fontSize: 20
   }
-});
-
-module.exports = Weather;
+})
