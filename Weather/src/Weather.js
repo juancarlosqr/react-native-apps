@@ -1,81 +1,101 @@
 import React, {
   Component,
+  Image,
   View,
   Text,
-  TouchableHighlight,
   StyleSheet
 } from 'react-native'
+import Button from './Button'
 import api from './api'
 
 export default class Weather extends Component {
   constructor (props) {
     super(props)
-    this.state = {
+    this.coord = {
       lat: '-34.916226',
-      lon: '-56.159872',
+      lon: '-56.159872'
+    }
+    this.state = {
+      latlon: '',
       city: '',
       temp: '',
-      desc: ''
+      desc: '',
+      msg: 'Getting weather info...',
+      loading: false
     }
   }
 
   getWeather () {
-    api.getWeather(this.state.lat, this.state.lon)
-      .then((data) => {
-        if (data !== null) this.setState(data)
-        else this.setState({desc: 'Something went wrong :('})
+    this.setState({loading: true})
+    api.getWeather(this.coord.lat, this.coord.lon)
+      .then(data => {
+        this.setState({
+          latlon: `(${ data.coord.lat }, ${ data.coord.lon })`,
+          city: data.name,
+          temp: api.kelvinToC(data.main.temp),
+          desc: data.weather[0].description,
+          loading: false
+        })
+        console.log('Weather data', data)
+      })
+      .catch(error => {
+        this.setState({desc: 'Something went wrong :(', loading: false})
+        console.log('Error during the API call', error)
       })
   }
 
+  componentDidMount () {
+    this.getWeather()
+  }
+
   render () {
+    const { latlon, city, temp, desc, msg, loading } = this.state
     return (
       <View style={ styles.wrapper }>
-        <Text style={ styles.title }>
-          Weather
-        </Text>
-        <Text>
-          { this.state.lat }
-        </Text>
-        <Text>
-          { this.state.lon }
-        </Text>
-        <TouchableHighlight
-          onPress={ this.getWeather.bind(this) }
-          style={ styles.button }>
-          <Text>
-            Check weather
-          </Text>
-        </TouchableHighlight>
-        <Text style={ styles.city }>
-          { this.state.city }
-        </Text>
-        <Text>
-          { this.state.temp }
-        </Text>
-        <Text>
-          { this.state.desc }
-        </Text>
+        <Image source={ require('./weather.png') } style={ styles.image } />
+        <Text style={ styles.title }>Weather</Text>
+        <View style={ styles.buttonWrapper }>
+          <Button onPress={ this.getWeather.bind(this) } text='Check weather' />
+        </View>
+        { (loading) ? <Text style={ styles.text }>{ msg }</Text> : null }
+        <Text style={ styles.city }>{ city }</Text>
+        <Text style={ styles.text }>{ latlon }</Text>
+        <Text style={ styles.temp }>{ temp }</Text>
+        <Text style={ styles.text }>{ desc }</Text>
       </View>
     )
   }
 }
 
-var styles = StyleSheet.create({
+const styles = StyleSheet.create({
   wrapper: {
     flex: 1,
-    justifyContent: 'center',
+    justifyContent: 'flex-start',
     alignItems: 'center'
   },
-  button: {
-    backgroundColor: 'white',
-    borderColor: 'black',
-    borderWidth: 1
+  buttonWrapper: {
+    margin: 25
+  },
+  image: {
+    height: 128,
+    width: 128,
+    resizeMode: 'contain',
+    marginBottom: 15,
+    marginTop: 100
   },
   title: {
-    color: '#000',
     fontSize: 40
   },
+  text: {
+    fontSize: 15,
+    marginVertical: 10
+  },
   city: {
-    fontSize: 20
+    fontSize: 20,
+    marginTop: 10
+  },
+  temp: {
+    fontSize: 60,
+    marginVertical: 10
   }
 })
