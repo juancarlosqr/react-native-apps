@@ -1,12 +1,13 @@
+var config = require('../config');
+
 var kelvinToC = function (kelvin) {
   return Math.round(kelvin - 273.15) + ' °C';
 };
 
 module.exports = function (lat, lon) {
-  var API_KEY = '49c768eeb75bdf0732d56daa2f7c24b9',
-      API_URL = `http://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&APPID=${API_KEY}`;
+  var API_URL = `${ config.API_BASE_URL }weather?lat=${lat}&lon=${lon}&APPID=${ config.API_KEY }`;
   console.log('Fetching API:URL', API_URL);
-  
+
   return fetch(API_URL)
     .then(response => {
       console.log('API response', response);

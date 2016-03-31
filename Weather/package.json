@@ -1,11 +1,24 @@
 {
-  "name": "Weather",
-  "version": "0.0.1",
+  "name": "weather-react-native",
+  "description": "Weather app built with React Native.",
+  "keywords": [
+    "React",
+    "React Native",
+    "Weather"
+  ],
+  "author": "Juan Carlos Quintero",
+  "license": "MIT",
+  "version": "0.0.2",
   "private": true,
   "scripts": {
     "start": "react-native start"
   },
   "dependencies": {
     "react-native": "^0.14.2"
+  },
+  "homepage": "https://github.com/juancarlosqr/react-native-apps/tree/master/Weather",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/juancarlosqr/react-native-apps.git"
   }
 }
