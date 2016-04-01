@@ -5,8 +5,10 @@ import config from '../config'
 const BASE_URL = 'http://api.openweathermap.org/data/2.5/'
 
 export default {
-  kelvinToC (kelvin) {
-    return Math.round(kelvin - 273.15) + ' °C'
+  kelvinToC (kelvin, noDegree = true) {
+    const val = Math.round(kelvin - 273.15)
+    if (!noDegree) return val
+    return `${ val } °C`
   },
   getWeather (lat, lon) {
     return fetch(`${ BASE_URL }weather?lat=${ lat }&lon=${ lon }&APPID=${ config.API_KEY }`)

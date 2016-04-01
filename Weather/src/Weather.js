@@ -21,7 +21,8 @@ export default class Weather extends Component {
       latlon: '',
       city: '',
       temp: '',
-      tempMinMax: '',
+      humidity: '',
+      tempType: '',
       desc: '',
       msg: 'Getting weather info...',
       loading: false
@@ -32,11 +33,13 @@ export default class Weather extends Component {
     this.setState({loading: true})
     api.getWeather(lat, lon)
       .then(data => {
+        const temp = api.kelvinToC(data.main.temp, false)
         this.setState({
           latlon: `(${ data.coord.lat }, ${ data.coord.lon })`,
           city: data.name,
           temp: api.kelvinToC(data.main.temp),
-          tempMinMax: `Min ${ api.kelvinToC(data.main.temp_min) }, Max ${ api.kelvinToC(data.main.temp_max) }`,
+          humidity: `Humidity: ${ data.main.humidity } %`,
+          tempType: (temp >= 30) ? 'hot' : ((temp >= 15) ? 'normal' : 'cold'),
           desc: data.weather[0].description,
           loading: false
         })
@@ -81,7 +84,7 @@ const styles = StyleSheet.create({
   },
   menu: {
     fontSize: 20,
-    padding: 8
+    padding: 10
   }
 })
 
@@ -95,7 +98,7 @@ const NavigationBarRouteMapper = {
     switch (route.name) {
       case 'MapScene':
         return (
-          <TouchableOpacity onPress={() => { navigator.pop() }}>
+          <TouchableOpacity onPress={() => navigator.pop() }>
             <Text style={ styles.menu }>Home</Text>
           </TouchableOpacity>
         )
@@ -107,9 +110,15 @@ const NavigationBarRouteMapper = {
     switch (route.name) {
       case 'HomeScene':
         return (
-          <TouchableOpacity
-            onPress={() => { navigator.push({name: 'MapScene'}) }}>
+          <TouchableOpacity onPress={() => navigator.push({name: 'MapScene'}) }>
             <Text style={ styles.menu }>Map</Text>
+          </TouchableOpacity>
+        )
+      case 'MapScene':
+        // TODO: fix this workaround
+        return (
+          <TouchableOpacity onPress={() => Function.prototype }>
+            <Text style={ styles.menu }>{'           '}</Text>
           </TouchableOpacity>
         )
       default:
