@@ -1,16 +1,18 @@
 import React, {
   Component,
-  Image,
-  View,
+  Navigator,
   Text,
+  TouchableOpacity,
   StyleSheet
 } from 'react-native'
-import Button from './Button'
+import HomeScene from './HomeScene'
+import MapScene from './MapScene'
 import api from './api'
 
 export default class Weather extends Component {
   constructor (props) {
     super(props)
+    // default coordinates (Punta Carretas, Montevideo, Uy)
     this.coord = {
       lat: '-34.916226',
       lon: '-56.159872'
@@ -19,20 +21,22 @@ export default class Weather extends Component {
       latlon: '',
       city: '',
       temp: '',
+      tempMinMax: '',
       desc: '',
       msg: 'Getting weather info...',
       loading: false
     }
   }
 
-  getWeather () {
+  getWeather (lat, lon) {
     this.setState({loading: true})
-    api.getWeather(this.coord.lat, this.coord.lon)
+    api.getWeather(lat, lon)
       .then(data => {
         this.setState({
           latlon: `(${ data.coord.lat }, ${ data.coord.lon })`,
           city: data.name,
           temp: api.kelvinToC(data.main.temp),
+          tempMinMax: `Min ${ api.kelvinToC(data.main.temp_min) }, Max ${ api.kelvinToC(data.main.temp_max) }`,
           desc: data.weather[0].description,
           loading: false
         })
@@ -45,57 +49,81 @@ export default class Weather extends Component {
   }
 
   componentDidMount () {
-    this.getWeather()
+    this.getWeather(this.coord.lat, this.coord.lon)
+  }
+
+  renderScene (route, navigator) {
+    const Component = ROUTES[route.name]
+    return <Component
+      { ...this.state }
+      { ...this.coord }
+      onGetWeather={ this.getWeather.bind(this) } />
   }
 
   render () {
-    const { latlon, city, temp, desc, msg, loading } = this.state
     return (
-      <View style={ styles.wrapper }>
-        <Image source={ require('./weather.png') } style={ styles.image } />
-        <Text style={ styles.title }>Weather</Text>
-        <View style={ styles.buttonWrapper }>
-          <Button onPress={ this.getWeather.bind(this) } text='Check weather' />
-        </View>
-        { (loading) ? <Text style={ styles.text }>{ msg }</Text> : null }
-        <Text style={ styles.city }>{ city }</Text>
-        <Text style={ styles.text }>{ latlon }</Text>
-        <Text style={ styles.temp }>{ temp }</Text>
-        <Text style={ styles.text }>{ desc }</Text>
-      </View>
+      <Navigator
+        style={ styles.container }
+        initialRoute={ {name: 'HomeScene'} }
+        configureScene={ (route) => Navigator.SceneConfigs.FloatFromRight }
+        navigationBar={
+          <Navigator.NavigationBar
+            routeMapper={ NavigationBarRouteMapper } />
+          }
+        renderScene={ this.renderScene.bind(this) } />
     )
   }
 }
 
 const styles = StyleSheet.create({
-  wrapper: {
-    flex: 1,
-    justifyContent: 'flex-start',
-    alignItems: 'center'
+  container: {
+    flex: 1
   },
-  buttonWrapper: {
-    margin: 25
-  },
-  image: {
-    height: 128,
-    width: 128,
-    resizeMode: 'contain',
-    marginBottom: 15,
-    marginTop: 100
-  },
-  title: {
-    fontSize: 40
-  },
-  text: {
-    fontSize: 15,
-    marginVertical: 10
-  },
-  city: {
+  menu: {
     fontSize: 20,
-    marginTop: 10
-  },
-  temp: {
-    fontSize: 60,
-    marginVertical: 10
+    padding: 8
   }
 })
+
+const ROUTES = {
+  HomeScene,
+  MapScene
+}
+
+const NavigationBarRouteMapper = {
+  LeftButton: function (route, navigator, index, navState) {
+    switch (route.name) {
+      case 'MapScene':
+        return (
+          <TouchableOpacity onPress={() => { navigator.pop() }}>
+            <Text style={ styles.menu }>Home</Text>
+          </TouchableOpacity>
+        )
+      default:
+        return null
+    }
+  },
+  RightButton: function (route, navigator, index, navState) {
+    switch (route.name) {
+      case 'HomeScene':
+        return (
+          <TouchableOpacity
+            onPress={() => { navigator.push({name: 'MapScene'}) }}>
+            <Text style={ styles.menu }>Map</Text>
+          </TouchableOpacity>
+        )
+      default:
+        return null
+    }
+  },
+  Title: function (route, navigator, index, navState) {
+    switch (route.name) {
+      case 'HomeScene':
+        return <Text style={ styles.menu }>Home</Text>
+      case 'MapScene':
+        return <Text style={ styles.menu }>Map</Text>
+      default:
+        return null
+    }
+  }
+}
